@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trivia Questions</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="calendar.png" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <!-- importing manifest json -->
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: "Arial", sans-serif;
+        margin-top: 50px;
+        text-align: center;
+        background: url("images/pngtree-scribbly-textured-vector-illustration-aesthetic-nature-landscape-of-abstract-green-fields-image_13891294.png");
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-size: cover;
+
+    }
+    .container {
+        flex: 1;
+        padding: 20px;
+    }
+    .notification {
+        padding: 20px;
+    }
+    .question-box {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        display: inline-block;
+        width: 80%;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .answer {
+        display: none;
+        margin-top: 10px;
+        padding: 5px;
+        border: 1px solid #007BFF;
+        background-color: #f0f8ff;
+    }
+    footer {
+        background-color: #f1f1f1;
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 20px;
+        flex-shrink: 0;
+    }
+</style>
+<body>
+
+<div class="container">
+    <div class="notification has-background-primary-soft has-text-primary-soft-invert">
+        <h1 class="title"><b>Trivia Question</b></h1>
+        <p><b>Click below to get a trivia question!</b></p>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            <div class="content">
+                <button class="button is-primary is-fullwidth" onclick="fetchTriviaData()">Get Trivia Question</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="question-container"></div>
+
+</div>
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p><strong>Made with Bulma</strong> by <a href="https://www.facebook.com/jenelyn.inoc.96">Jenelyn Inoc BSIT-2B</a></p>
+    </div>
+</footer>
+
+<script>
+    function fetchTriviaData() {
+        const url = "https://opentdb.com/api.php?amount=1&category=17&difficulty=easy";
+        const questionContainer = document.getElementById('question-container');
+        questionContainer.innerHTML = 'Loading...';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const question = data.results[0];
+                if (!question) {
+                    questionContainer.innerHTML = 'No trivia question found.';
+                    return;
+                }
+                questionContainer.innerHTML = `
+                    <div class="question-box">
+                        <strong>Question:</strong> ${question.question}
+                        <br><br>
+                        <button onclick="showAnswer()">Show Answer</button>
+                        <div id="answer" class="answer">
+                            <strong>Answer:</strong> ${question.correct_answer}
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                questionContainer.innerHTML = 'An error occurred while fetching the trivia question.';
+                console.error(error);
+            });
+    }
+
+    function showAnswer() {
+        const answerDiv = document.getElementById('answer');
+        answerDiv.style.display = 'block';
+    }
+</script>
+  
+    <script src="sw.js"> </script>
+  </body>
+</html>
